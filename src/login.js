@@ -8,7 +8,6 @@ export class Login {
   password = '';
 
   constructor(aurelia, router, authService) {
-    console.log(router)
     this.router = router;
     this.authService = authService;
     this.aurelia = aurelia;
@@ -24,13 +23,13 @@ export class Login {
   submit() {
     let self = this;
     this.authService.authenticate(this.username, this.password).then((response)=>{
-        self.aurelia.setRoot('app').then(() => {
-          //self.router.navigate('', {});
-        });
-      })
-      .catch(err=>{
-        console.error(err.message);
+      self.aurelia.setRoot('app').then(() => {
+        self.router.navigate('', {});
       });
+    })
+    .catch(err=>{
+      alert(err.message);
+    });
   }
 
 }

@@ -15,7 +15,7 @@ export class Logout {
       let self = this;
   		this.authService.logout().then(response=>{
         self.aurelia.setRoot('public').then(() => {
-          //self.router.navigate('login', {});
+          self.router.navigate('login', {});
         });
   		})
   		.catch(err=>{

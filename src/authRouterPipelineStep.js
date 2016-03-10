@@ -1,37 +1,36 @@
 import { inject, Aurelia } from 'aurelia-framework';
-import { Redirect, NavigationInstruction, RouterConfiguration } from 'aurelia-router';
+import { Router, Redirect } from 'aurelia-router';
 import { AuthService } from 'auth.service';
 
 @inject(AuthService)
 export class AuthRouterPipelineStep {
 
     constructor(authService) {
-        this.authService = authService;
+      this.authService = authService;
     }
 
-    run(navigationInstruction, next) {
+    run(routingContext:any, next:any) {
 
-        debugger;
-        var isAuth = this.authService.isAuth;
-        if (!isAuth) {
-          return next.cancel(new Redirect('login'));
-        }
+      var isAuth = this.authService.isAuth;
+      if (!isAuth) {
+        return next.cancel(new Redirect('login'));
+      }
 
-        if (route.name == 'login') {
-          return next.cancel(new Redirect('welcome'));
-        }
+      if (route.name == 'login') {
+        return next.cancel(new Redirect('welcome'));
+      }
 
-        //let route = routingContext.config;
-        if (navigationInstruction.getAllInstructions().some(i => i.config.adminOnly))
-        {
-            var isAdmin = this.authService.isAdmin;
-            if (!isAdmin) {
-                return next.cancel(new Redirect('welcome'));
-            }else{
-                return next.cancel(new Redirect('admin'));
-            }
-        }
+      if ( ((route.name == this.appSettings.loginRoute) && isAuthenticated) || (routeBitMask > userAccessLevel.bitMask) ) {
+        this.logger.error('Sorry, you don\'t have access to this module.');
+        return next.cancel(new Redirect(this.appSettings.defaultRoute));
+      }
 
-        return next();
+      if (routingContext.getAllInstructions().some(i => i.config.adminOnly)) {
+        var root = this.authService.isAdmin ? 'admin' : 'welcome';
+        return next.cancel(new Redirect(root));
+      }
+
+      return next();
     }
+
 }
